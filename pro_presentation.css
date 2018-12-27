@@ -1,0 +1,119 @@
+/* importing the following fonts: Nobile, lato. */
+
+@import url('https://fonts.googleapis.com/css?family=Nobile|Lato');
+
+
+/* Currently, the root trick does not work.
+:root{
+	--blue: #193993;
+  --grey: #9b9292;
+  --black: #0e0705;
+  --green: #a5d3c1;
+  --gold: #eebf48;
+
+}
+*/
+
+
+.title-slide{
+	background-color: #9b9292;
+	}
+
+
+h1{
+	font-family: Lato, sans-serif;
+	color: #193993;
+	font-size: 2em;
+	text-align: center;
+		text-rendering: optimizelegibility !important;
+
+}
+
+h2{
+	font-family: Lato, sans-serif;
+	color:   #193993;
+	font-size: 1.75em;
+	font-style: italic;
+	text-align: center;
+		text-rendering: optimizelegibility !important;
+
+}
+
+h3{
+font-family: Lato, sans-serif;
+	color: #193993; 
+	font-style: italic;
+	text-align: center;
+	font-size: 1.5em;
+		text-rendering: optimizelegibility !important;
+
+}
+
+h4{
+font-family: Lato, sans-serif;
+	color: #193993; 
+	text-align: right;
+	font-size: .55em;
+		text-rendering: optimizelegibility !important;
+}
+
+ul,ol,dl,p{
+	font-family: 'Nobile', sans-serif;
+	font-size: 1.5rem;
+	text-align: left;
+}
+
+	
+
+div.my-header {
+	background-color: #F77A00;
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#ffb76b), color-stop(0%,#ffa73d), color-stop(0%,#ffffff), color-stop(10%,#ffffff), color-stop(25%,#F77A00), color-stop(100%,#F77A00));
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	height: 30px;
+	width: 100%;
+	text-align: left;
+}
+
+.image-half{
+	height: 50%;
+	width: 50%;
+}
+
+.image-quarter{
+	height: 25%;
+	width: 25%;
+}
+
+.image-ten{
+	height: 10%;
+	width: 10%;
+	}
+
+.left{
+	text-align:left !important;
+	}
+
+.footnote{
+	color:#193993;
+	font-size: .55em;
+	font-style: italic;
+	
+}
+
+.v-middle{
+	vertical-align: middle;}
+	
+.right-code {
+  color: #777;
+  width: 38%;
+  height: 92%;
+  float: right;
+}
+
+.left-plot {
+  width: 60%;
+  float: left;
+  padding-left: 1%;
+}
