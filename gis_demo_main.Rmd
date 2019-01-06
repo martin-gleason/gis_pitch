@@ -13,12 +13,13 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
+
 ```{r setup, include= FALSE, echo = FALSE, warning=FALSE}
 library(kableExtra)
 source("cleaning_aoic.R")
 source("gis_demo.R")
+source("cta_data.R")
 ```
-
 # The Ask
 
   * Cook County Geographic Information Systems (CCGIS) department is willing to develop a number of dashboard and applications for the department 
@@ -71,6 +72,7 @@ source("gis_demo.R")
 ]
 
 ---
+
 ## GIS and the Department: Demo
   
 * The following demonstrations were developed with sample data used in the Discretion Mapping Project
@@ -82,11 +84,12 @@ source("gis_demo.R")
   * [R](https://www.r-project.org), [Leaflet JS](https://leafletjs.com), and [Google's API](https://developers.google.com/maps/documentation/)
   * CCGIS uses to [ARCGis](https://www.arcgis.com/index.html), a complete GIS solution
   * All of the tools we would use are either
-    *   Free
-    *   Already under contract
-    *   Maps would be interactive with proper judicial permission
+     *  Free
+     *  Already under contract
+     *  Maps would be interactive with proper judicial permission
 
 .footnote[1: Clean data removes typos and addressses missing values]
+
 ---
 ## GIS and the Department
 .left-plot[
@@ -96,6 +99,7 @@ chicago_with_districts_ggmap
 
 ```
 ]
+
 .right-code[
 * A map of Chicago Metro Area 
   * With the Chicago Police Department Districts 
@@ -105,35 +109,35 @@ chicago_with_districts_ggmap
 ]
 
 ---
-## Diversions: From `r min(geo_coded_diversions$STRDTE)` to `r max(geo_coded_diversions$ENDDTE, na.rm = TRUE)` 
-```{r gis_demo, include=TRUE, echo = FALSE, warning=FALSE, out.width="100%", fig.height =6}
+## Diversions: From `r min(geo_coded_diversions$STRDTE)` to `r max(geo_coded_diversions$ENDDTE, na.rm = TRUE)`
 
+```{r gis_demo, include = TRUE, echo = FALSE, out.width="95%", fig.height =6}
 all_diversions
 
 ```
+
 ---
 # Understanding the Map
 
 * All `r nrow(geo_coded_diversions_sf)` Diversions
-  * From 2012 to 2017
-  * The year 9999 is clearly a placeholder value
-  
+  *  From 2012 to 2017
+  *  The year 9999 is clearly a placeholder value
+
 * Indicates where diversions occured *throughout* the country
-  * Zoom out to see cases not centered in Cook County
-  
-* If the data set had additional information, additional datapoints could be plotted
-  * Currently, the data is limited to: `r names(geo_coded_diversions[1:7])`
-  * ITVSTS appears to be "Intervention Status"
+
+* Currently, the data is limited to: `r names(geo_coded_diversions[1:7])`
+* ITVSTS appears to be "Intervention Status"
 
 * Filter for the most recent cases gives us a more useable map
-  * A total of `r nrow(filter(geo_coded_diversions_sf, lubridate::year(STRDTE) >= 2016))` clients
----
+* A total of `r nrow(filter(geo_coded_diversions_sf, lubridate::year(STRDTE) >= 2016))` clients
 
+---
 ## Intervention Status: 2016-2017
-```{r intervention_status, include=TRUE, echo = FALSE, warning=FALSE, out.width="95%", fig.height =6}
+
+```{r intervention_status, include=TRUE, echo = FALSE, warning=FALSE, out.width="100%", fig.height =6}
 
 leaflet(cpd_districts) %>%
-addTiles() %>%
+  addTiles() %>%
   setView(lng = -87.7, lat = 41.9, zoom = 12) %>%
   addPolygons(color = "black",
               fillColor = "#D3D3D3", 
@@ -145,3 +149,4 @@ addTiles() %>%
             title = "Intervention Status") 
 ```
 
+# Chicago: Diversions with CTA Stops
