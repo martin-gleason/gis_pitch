@@ -17,8 +17,9 @@ output:
 ```{r setup, include= FALSE, echo = FALSE, warning=FALSE}
 library(kableExtra)
 source("cleaning_aoic.R")
-source("gis_demo.R")
 source("cta_data.R")
+source("gis_demo.R")
+
 ```
 # The Ask
 
@@ -124,12 +125,13 @@ all_diversions
   *  The year 9999 is clearly a placeholder value
 
 * Indicates where diversions occured *throughout* the country
+  * And one person from England
 
 * Currently, the data is limited to: `r names(geo_coded_diversions[1:7])`
+
 * ITVSTS appears to be "Intervention Status"
 
-* Filter for the most recent cases gives us a more useable map
-* A total of `r nrow(filter(geo_coded_diversions_sf, lubridate::year(STRDTE) >= 2016))` clients
+
 
 ---
 ## Intervention Status: 2016-2017
@@ -148,5 +150,27 @@ leaflet(cpd_districts) %>%
             value= ~geo_coded_diversions_sf$ITVSTS,
             title = "Intervention Status") 
 ```
+---
+###  Internvention Status Map: Decoded
+```{r caluclations, include = TRUE, echo = TRUE, message = FALSE, warning = FALSE}
 
-# Chicago: Diversions with CTA Stops
+n_clients <- geo_coded_diversions_sf%>%
+  filter(lubridate::year(STRDTE) >= 2016) %>%
+  nrow()
+```
+* Filtering for the most recent cases gives us a more useable map
+  *    *Code included on purpose*
+* A total of `r n_clients` clients
+
+* Partnering with GIS would allow for more real time analytics:
+  *  Based on currenbt JEMS/CFive Data
+  *  And data from other sources
+    *  CTA
+    *  DCFS
+    *  Community partners
+
+---
+# Other Sources
+```{r heatmap, include = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+heat_map_CTA
+```

@@ -16,6 +16,9 @@ key <- readLines("api_key.txt", n = 1, ok = TRUE)
 cpd_geojson <- file.path("~/Dropbox (Personal)/Coding Projects/javascript/simple_json/json/CPD districts.geojson")
 cpd_districts <- readOGR(cpd_geojson)
 
+cta_l <- read_csv("CTA_-_System_Information_-_List_of__L__Stops.csv")
+cta_bus <- read_csv("CTA_-_System_Information_-_Bus_Stop_Locations_in_Digital_Sign_Project.csv")
+
 #Diversion data, geocoded.
 location <- file.path("../Core Stats/gis_data_with_addresses.RDS")
 data_for_gis <- read_rds(location)
@@ -81,27 +84,3 @@ diversion_by_status %>%
   addCircles(data = cta_sf,
              color = "black")
 
-###
-
-
-## ggmap functions
-shapefile <- cpd_districts %>% broom::tidy()
-
-
-chicago_map <- get_map("Chicago", zoom = 12)
-
-chicago_with_districts_ggmap <- ggmap(chicago_map, extent = "normal",
-                 maprange = FALSE) + 
-  geom_polygon(aes(x = long, y = lat, group = group), 
-               data = shapefile, 
-               color = "black", fill = "grey",
-               size = .4,
-               alpha = .4)
-
-div_cta <- chicago_with_districts_ggmap + 
-  geom_point(data = cta_stops, aes(x = lng, y = lat, col =  Type))
-  
-
-#CTA
-cta_l <- read_csv("CTA_-_System_Information_-_List_of__L__Stops.csv")
-cta_bus <- read_csv("CTA_-_System_Information_-_Bus_Stop_Locations_in_Digital_Sign_Project.csv")

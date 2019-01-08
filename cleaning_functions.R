@@ -15,8 +15,8 @@ seperate_calendars <- function(xlsx, ...){
 #Brute force remove the standad 8 columns
 set_PO_stats <- function(df, ...){
   df <- df %>%
-    select(AOIC_Stat = X__1,
-           PO_Stat = X__2:X__8)
+    select(AOIC_Stat = 1,
+           PO_Stat = 2:8)
 }
 
 

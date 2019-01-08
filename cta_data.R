@@ -8,8 +8,17 @@ library(spdplyr)
 
 #GeoJson prep
 cpd_geojson <- file.path("~/Dropbox (Personal)/Coding Projects/javascript/simple_json/json/CPD districts.geojson")
-cpd_districts <- readOGR(cpd_geojson)
-cpd_districts_sf <-cpd_districts %>% st_as_sfc()
+cpd_districts <- readOGR(cpd_geojson) #spatial polygons data frame
+cpd_districts <- cpd_districts  %>%
+  mutate(region = map_chr(1:length(cpd_districts@polygons), function(i){
+    cpd_districts@polygons[[i]]@ID
+  }))
+
+shapefile <- cpd_districts %>% broom::tidy()
+
+cpd_districts_sf <- cpd_districts %>% st_as_sf() #Polygon
+
+
 
 #GGMap
 Sys.chmod("api_key.txt", mode = "0400")
@@ -24,7 +33,6 @@ cta_bus <- read_csv("CTA_-_System_Information_-_Bus_Stop_Locations_in_Digital_Si
 #"\\(([^,]+), ([^)]+)\\)" <- remove between parens
 cta_l_LatLong <- cta_l %>%
   select(STOP_ID, Location) 
-
 
 chicago_map <- get_map(location = "chicago", zoom = 10)
 
@@ -56,19 +64,21 @@ cta_stops_sf <- cta_stops %>%
 #https://stackoverflow.com/questions/45891034/create-choropleth-map-from-coordinate-points
 
 #counts cta stops in police districts
-count <- cta_stops_sf %>% st_within(cpd_districts_sf, prepared = TRUE)
+total_stops <- cta_stops_sf %>%
+  st_within(cpd_districts_sf, sparse = FALSE, prepared = TRUE)
 
-count1 <- cta_stops_sf %>% st_within(cpd_districts_sf, sparse = FALSE)
+#add counts column to CPD df
+cpd_districts_df <- cpd_districts_sf %>%
+  mutate(Count = apply(total_stops, 2, sum))
 
 chicago_transit_map <- chicago_map %>%
   ggmap() +
   geom_point(data = cta_stops, aes(x = lng, y = lat, col =  Type))
 
 
-#CPD Data
 
 
-chicago_with_districts <- ggmap(chicago_map, extent = "normal",
+chicago_with_districts_ggmap <- ggmap(chicago_map, extent = "normal",
                                       maprange = FALSE) + 
   geom_polygon(aes(x = long, y = lat, group = group), 
                data = shapefile, 
@@ -76,16 +86,26 @@ chicago_with_districts <- ggmap(chicago_map, extent = "normal",
                size = .4,
                alpha = .4)
 
-# toronto + geom_polygon(aes(x=long,y=lat, group=group,
-#                            fill=Total.Population), data=points2, color='black') +
-#   scale_fill_distiller(palette='Spectral') + scale_alpha(range=c(0.5,0.5))
 
-chicago_with_districts +
-  geom_polygon(data = cta_stops, aes(x = lng, y = lat)) +
-  scale_fill_gradient(palette = "Spectral")
-  #geom_point(data = cta_stops, aes(x = lng, y = lat, col =  Type)) 
+#CPD Data
+chicago_with_districts <- ggmap(chicago_map, extent = "normal",
+                                      maprange = FALSE) + 
+  geom_polygon(aes(x = long, y = lat, group = group), 
+               data = shapefile, 
+               color = "black", fill = "grey",
+               size = .4,
+               alpha = .6)
 
-  
+#CTA + CPD
+div_cta <- chicago_with_districts_ggmap + 
+  geom_point(data = cta_stops, aes(x = lng, y = lat, col =  Type))
 
+cpd_districts_df %>%
+  ggplot() +
+  geom_sf(size = 1)
 
-
+heat_map_CTA <- ggplot(cpd_districts_df) + 
+  geom_sf(aes(fill = Count), size = .5, 
+          col = "white") +
+  scale_fill_viridis_c(name = "Number of CTA Stops") +
+  labs(title = "CTA Stops within Police Districts")
