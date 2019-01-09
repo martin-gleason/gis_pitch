@@ -30,7 +30,7 @@ source("gis_demo.R")
 * Working with CCGIS will enhance the value of CFive and improve the department's analytical capability
 
 ---
-.center[# Data Sharing Concerns]
+# Data Sharing Concerns
 
 * Cook County Juvenile Court data has specific privacy restrictions
   * Proposed data for prototyping has no externally identifying information
@@ -41,10 +41,10 @@ source("gis_demo.R")
   * Addresses
   * Charges
   * Supervision Level
-  * Final Probation/Supervision Status 
+  * Final Probation/Supervision Status
+  
 ---
-
-.center[# Cook County GIS]
+# Cook County GIS
 
 * GIS stands for Geographic Information Services
   * [Cook Central](https://hub-cookcountyil.opendata.arcgis.com)
@@ -86,7 +86,7 @@ source("gis_demo.R")
 .footnote[1: Clean data removes typos and addresses missing values]
 
 ---
-.center[## GIS and the Department]
+# GIS and the Department
 .left-plot[
 ```{r gis_chicago_pd, include = TRUE, echo = FALSE, warning = FALSE, out.width="100%", fig.height =6, fig.align='left'}
 
@@ -105,7 +105,8 @@ chicago_with_districts_ggmap +
 ]
 
 ---
-##Diversions<sup>1</sup> from `r as.Date(geo_coded_diversions$STRDTE) %>% min() %>% format("%m-%d-%Y")` to `r max(geo_coded_diversions$ENDDTE, na.rm = TRUE) %>% format("%m-%d-%Y")`
+##Diversions<sup>1</sup> from `r as.Date(geo_coded_diversions$STRDTE) %>% min() %>% format("%m-%d-%Y")` 
+to `r max(geo_coded_diversions$ENDDTE, na.rm = TRUE) %>% format("%m-%d-%Y")`
 
 ```{r gis_demo, include = TRUE, echo = FALSE, out.width="95%", fig.height =6}
 all_diversions
@@ -168,14 +169,15 @@ n_clients <- geo_coded_diversions_sf%>%
 # Additional Sources Example
 .right-plot[
 ```{r heatmap, include = TRUE, echo = FALSE, message = FALSE, warning = FALSE, out.width="100%", fig.height =6, fig.align='right'}
-heat_map_CTA
+heat_map_CTA +
+  labs(caption = "Data source is from previously listed CTA and CPD sources")
 ```
 ]
 .left-code[
  
-* CTA Stop Data<sup>1</sup>
+* CTA Stop Data
 
-* Police District Data<sup>2</sup>
+* Police District Data
 
 * Calculated in R 
 
@@ -183,11 +185,3 @@ heat_map_CTA
 
 * This all begins when we share data with our sister agency
 ]
-&nbsp;
-
-
-.footnote[1: CTA data from [https://www.transitchicago.com/data/](https://www.transitchicago.com/data/)]
-
-&nbsp;
-
-.footnote[2: [https://data.cityofchicago.org/Public-Safety/CPD-districts/7hhi-ktqw](https://data.cityofchicago.org/Public-Safety/CPD-districts/7hhi-ktqw)]
