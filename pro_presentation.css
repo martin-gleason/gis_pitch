@@ -33,8 +33,6 @@ h2{
 	font-family: Lato, sans-serif;
 	color:   #193993;
 	font-size: 1.75em;
-	font-style: italic;
-	text-align: center;
 		text-rendering: optimizelegibility !important;
 
 }
@@ -42,8 +40,6 @@ h2{
 h3{
 font-family: Lato, sans-serif;
 	color: #193993; 
-	font-style: italic;
-	text-align: center;
 	font-size: 1.5em;
 		text-rendering: optimizelegibility !important;
 
@@ -63,7 +59,8 @@ ul,ol,dl,p{
 	text-align: left;
 }
 
-	
+.center{
+	text-align: center;}
 
 div.my-header {
 	background-color: #F77A00;
@@ -97,8 +94,9 @@ div.my-header {
 
 .footnote{
 	color:#193993;
-	font-size: .55em;
+	font-size: .45em;
 	font-style: italic;
+	text-align: right;
 	
 }
 
@@ -106,14 +104,24 @@ div.my-header {
 	vertical-align: middle;}
 	
 .right-code {
-  color: #777;
   width: 38%;
   height: 92%;
   float: right;
+}
+.left-code {
+  width: 38%;
+  height: 92%;
+  float: left;
 }
 
 .left-plot {
   width: 60%;
   float: left;
   padding-left: 1%;
+}
+
+.right-plot{
+  width: 60%;
+  float: right;
+  padding-left: 2%;
 }
