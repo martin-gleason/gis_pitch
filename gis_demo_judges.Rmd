@@ -1,0 +1,205 @@
+---
+title: Extending Department Capability With GIS
+author: Martin Gleason, MS
+output:
+  xaringan::moon_reader:
+    css: ["libs/remark-css/default.css", "pro_presentation.css"]
+    self_contained: no
+    lib_dir: libs
+    seal: false
+    nature:
+      beforeInit: "macros.js"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include= FALSE, echo = FALSE, warning=FALSE}
+library(kableExtra)
+source("cleaning_aoic.R")
+source("cta_data.R")
+source("gis_demo.R")
+
+```
+
+.center[# Data Sharing With CCGIS]
+* Cook County Geographic Information Systems (CCGIS) department is willing to develop a number of dashboard and applications for the department 
+
+* They require some of the department's data to build their solutions
+
+* Working with CCGIS will enhance the value of CFive and improve the department's analytical capability
+
+---
+# Data Sharing Concerns
+
+* Cook County Juvenile Court data has specific privacy restrictions
+  * Proposed data for prototyping has no externally identifying information
+  * The data would be housed on their servers during prototyping
+    * Data product would be hosted internal
+
+* CCGIS needs sample data that has:
+  * Addresses
+  * Charges
+  * Supervision Level
+  * Final Probation/Supervision Status
+  
+---
+# Cook County GIS
+
+* GIS stands for Geographic Information Services
+  * [Cook Central](https://hub-cookcountyil.opendata.arcgis.com)
+  
+* Cook County has an department that has worked with:
+  * [Cook County Sheriff's department](https://maps.cookcountyil.gov/sheriffreentryassistance/)
+  * [Cook County Medical Examiner's Office](https://maps.cookcountyil.gov/medexammaps/)
+  * [Cook County Assessors](http://hub-cookcountyil.opendata.arcgis.com/datasets/5ec856ded93e4f85b3f6e1bc027a2472_0)
+
+* The current director of CCGIS is a long time supporter of [MapCORPS](https://mapscorps.org)
+
+---
+# CCGIS and the Department
+
+* CCGIS can create applications with data that:
+  * Assist in automatically assigning cases based on geographic location
+  * Shows gaps in services and dosage throughout the county
+  * Clusters of needs
+  * Systemic barriers to services
+      * Average time to service providers
+      * Client to service provider ratio
+
+---
+# Server to Server
+.pull-left[
+![:scale 120%](imgs/GIS_ERD.JPG)
+]
+.pull-right[
+* Diagram shows how each server/service communicates witht the other
+
+* It shows the boundaries between GIS and OCJ
+
+* It represents privacy and processing concerns 
+
+* Diagram illustrates that GIS would only process, and not store, OCJ Data
+]
+
+---
+# GIS and the Department: Demo
+  
+* The following demonstrations were developed with sample data used in the Discretion Mapping Project
+  * Data was stripped of all identifying information
+    * The data was not cleaned<sup>1</sup>
+  * Addresses were geocoded by Google Maps API
+  
+* Mock-ups were created with:
+  * [R](https://www.r-project.org), [Leaflet JS](https://leafletjs.com), and [Google's API](https://developers.google.com/maps/documentation/)
+  * CCGIS uses to [ARCGis](https://www.arcgis.com/index.html), a complete GIS solution
+  * All of the tools we would use are either
+     *  Free
+     *  Already under contract
+     *  Interactive only with proper judicial permission
+
+.footnote[1: Clean data removes typos and addresses missing values]
+
+---
+# GIS and the Department
+.left-plot[
+```{r gis_chicago_pd, include = TRUE, echo = FALSE, warning = FALSE, out.width="100%", fig.height =6, fig.align='left'}
+
+chicago_with_districts_ggmap +
+  labs(caption = "Source: https://data.cityofchicago.org/Public-Safety/CPD-districts/7hhi-ktqw")
+
+```
+]
+
+.right-code[
+* Police district data comes from CPD<sup>1</sup>
+
+  *  Changing boundaries would be a simple task
+
+* CCGIS would use municipal boundaries for suburban districts
+]
+
+---
+##Diversions<sup>1</sup> from `r as.Date(geo_coded_diversions$STRDTE) %>% min() %>% format("%m-%d-%Y")` to `r max(geo_coded_diversions$ENDDTE, na.rm = TRUE) %>% format("%m-%d-%Y")`
+
+```{r gis_demo, include = TRUE, echo = FALSE, out.width="95%", fig.height =6}
+all_diversions
+
+```
+
+---
+# Understanding the Map
+
+* All `r nrow(geo_coded_diversions_sf)` Diversions
+  *  From 2012 to 2017
+  *  The year 9999 is clearly a placeholder value
+
+* Indicates where diversions occurred *throughout* the country
+  * And one person from England
+
+* Currently, the data is limited to: `r names(geo_coded_diversions[1:7])`
+
+* ITVSTS appears to be "Intervention Status"
+
+
+.footnote[1: Data from JEMS for the Discretion Mapping Project]
+---
+## Intervention Status: 2016-2017
+
+```{r intervention_status, include=TRUE, echo = FALSE, warning=FALSE, out.width="100%", fig.height =6}
+
+leaflet(cpd_districts) %>%
+  addTiles() %>%
+  setView(lng = -87.7, lat = 41.9, zoom = 12) %>%
+  addPolygons(color = "black",
+              fillColor = "#D3D3D3", 
+              fillOpacity = 0.1) %>%
+  addCircles(data = filter(geo_coded_diversions_sf, lubridate::year(STRDTE) >= 2016),
+             color = ~pal(ITVSTS)) %>%
+  addLegend("bottomright", pal = pal,
+            value= ~geo_coded_diversions_sf$ITVSTS,
+            title = "Intervention Status from JEMS") 
+```
+---
+###  Intervention Status Map: Decoded
+```{r caluclations, include = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+n_clients <- geo_coded_diversions_sf%>%
+  filter(lubridate::year(STRDTE) >= 2016) %>%
+  nrow()
+```
+* Filtering for the most recent cases gives us a more usable map
+
+* A total of `r n_clients` clients
+
+* Partnering with GIS would allow for more real time analytics:
+  *  Based on current JEMS/CFive Data
+  *  And data from other sources
+    *  CTA
+    *  DCFS
+    *  Community partners
+
+---
+# Additional Sources Example
+.right-plot[
+```{r heatmap, include = TRUE, echo = FALSE, message = FALSE, warning = FALSE, out.width="100%", fig.height =6, fig.align='right'}
+heat_map_CTA +
+  labs(caption = "Data source is from previously listed CTA and CPD sources")
+```
+]
+.left-code[
+ 
+* CTA Stop Data
+
+* Police District Data]
+
+---
+# Next Steps:
+* Frame OCJ Data to different geographic locations
+  * Courtroom
+  * Commissioner District
+
+* Community partners
+  *  Locations and services provided
+  *  Success rate of programs
+  *    

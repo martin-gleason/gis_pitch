@@ -105,8 +105,7 @@ chicago_with_districts_ggmap +
 ]
 
 ---
-##Diversions<sup>1</sup> from `r as.Date(geo_coded_diversions$STRDTE) %>% min() %>% format("%m-%d-%Y")` 
-to `r max(geo_coded_diversions$ENDDTE, na.rm = TRUE) %>% format("%m-%d-%Y")`
+##Diversions<sup>1</sup> from `r as.Date(geo_coded_diversions$STRDTE) %>% min() %>% format("%m-%d-%Y")` to `r max(geo_coded_diversions$ENDDTE, na.rm = TRUE) %>% format("%m-%d-%Y")`
 
 ```{r gis_demo, include = TRUE, echo = FALSE, out.width="95%", fig.height =6}
 all_diversions
