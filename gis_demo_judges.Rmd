@@ -202,4 +202,3 @@ heat_map_CTA +
 * Community partners
   *  Locations and services provided
   *  Success rate of programs
-  *    
